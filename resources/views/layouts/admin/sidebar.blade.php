@@ -55,11 +55,35 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('owner.laporan.penjualan') ? 'active' : '' }}" href="{{ route('owner.laporan.penjualan') }}">
+                            <i class="ni ni-chart-bar-32 text-green"></i> Laporan Penjualan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('owner.laporan.stok') ? 'active' : '' }}" href="{{ route('owner.laporan.stok') }}">
+                            <i class="ni ni-archive-2 text-info"></i> Laporan Stok
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('owner.laporan.kedaluwarsa') ? 'active' : '' }}" href="{{ route('owner.laporan.kedaluwarsa') }}">
+                            <i class="ni ni-calendar-grid-58 text-red"></i> Laporan Kedaluwarsa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('owner.staf.*') ? 'active' : '' }}" href="{{ route('owner.staf.index') }}">
+                            <i class="ni ni-badge text-orange"></i> Akun Staf
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('owner.member.*') ? 'active' : '' }}" href="{{ route('owner.member.index') }}">
+                            <i class="ni ni-single-02 text-default"></i> Daftar Member
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('owner.pengaturan.*') ? 'active' : '' }}" href="{{ route('owner.pengaturan.edit') }}">
                             <i class="ni ni-settings-gear-65 text-default"></i> Pengaturan Toko
                         </a>
                     </li>
-                    {{-- Tahap 6: Laporan Stok, Penjualan, Kedaluwarsa, Kelola Akun Staf --}}
                 </ul>
             @endif
 
@@ -138,6 +162,11 @@
             <ul class="navbar-nav mb-md-3">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('beranda') }}"><i class="ni ni-shop"></i> Lihat Toko</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('akun.password*') ? 'active' : '' }}" href="{{ route('akun.password') }}">
+                        <i class="ni ni-key-25"></i> Ganti Password
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"

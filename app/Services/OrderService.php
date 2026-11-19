@@ -241,11 +241,14 @@ class OrderService
 
                     $locked->update(['status' => 'selesai', 'completed_at' => now(), 'completed_auto' => true]);
 
+                    $telp = \App\Models\Setting::find('store_phone')?->value;
+
                     $this->notifier->to(
                         $locked->customer_id,
                         'Pesanan selesai otomatis',
                         $locked->invoice_no . ' ditandai selesai karena sudah lebih dari '
-                            . Order::AUTO_COMPLETE_DAYS . ' hari sejak dikirim. Ada masalah dengan pesanan? Hubungi toko.',
+                            . Order::AUTO_COMPLETE_DAYS . ' hari sejak dikirim. Ada masalah dengan pesanan? Hubungi toko'
+                            . ($telp ? ' di ' . $telp : '') . '.',
                         route('pesanan.show', $locked, false)
                     );
                 });

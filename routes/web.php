@@ -22,6 +22,11 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentProofController;
 use App\Http\Controllers\Karyawan\OrderController as KaryawanOrderController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
+use App\Http\Controllers\Owner\MemberController;
+use App\Http\Controllers\Owner\ReportController;
+use App\Http\Controllers\Owner\StaffController;
 
 // Katalog publik (bisa dilihat tanpa login)
 Route::get('/', [CatalogController::class, 'index'])->name('beranda');
@@ -99,11 +104,28 @@ Route::middleware('auth')->group(function () {
         Route::get('member', [PosController::class, 'member'])->middleware('throttle:60,1')->name('member');
     });
 
-    // ===== Owner (halaman lain menyusul di Tahap 6) =====
+    // ===== Owner =====
     Route::middleware('role:owner')->prefix('owner')->name('owner.')->group(function () {
-        Route::get('/', fn () => view('admin.placeholder', ['judul' => 'Area Owner']))->name('home');
+        Route::get('/', [OwnerDashboardController::class, 'index'])->name('home');
+
+        Route::get('laporan/penjualan', [ReportController::class, 'sales'])->name('laporan.penjualan');
+        Route::get('laporan/stok', [ReportController::class, 'stock'])->name('laporan.stok');
+        Route::get('laporan/kedaluwarsa', [ReportController::class, 'expiry'])->name('laporan.kedaluwarsa');
+
+        Route::resource('staf', StaffController::class)->parameters(['staf' => 'user'])->except(['show', 'destroy']);
+        Route::post('staf/{user}/status', [StaffController::class, 'toggle'])->name('staf.status');
+        Route::post('staf/{user}/password', [StaffController::class, 'resetPassword'])->name('staf.password');
+
+        Route::get('member', [MemberController::class, 'index'])->name('member.index');
+
         Route::get('pengaturan', [SettingController::class, 'edit'])->name('pengaturan.edit');
         Route::put('pengaturan', [SettingController::class, 'update'])->name('pengaturan.update');
+    });
+
+    // Ganti password sendiri (semua staf)
+    Route::middleware('role:karyawan,kasir,owner')->group(function () {
+        Route::get('akun/password', [AccountController::class, 'edit'])->name('akun.password');
+        Route::put('akun/password', [AccountController::class, 'update'])->name('akun.password.update');
     });
 
     // Bukti pembayaran (privat): hanya kasir, owner, dan pelanggan pemilik pesanan

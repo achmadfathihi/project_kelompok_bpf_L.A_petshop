@@ -49,7 +49,9 @@
     @if ($order->status === 'selesai')
         <div class="alert alert-success">
             Pesanan selesai{{ $order->completed_auto ? ' (otomatis)' : '' }}. Terima kasih sudah berbelanja di {{ config('app.name') }}.
-            <div class="small mt-1">Ada masalah dengan pesanan? Hubungi toko.</div>
+            <div class="small mt-1">
+                Ada masalah dengan pesanan? Hubungi toko{{ $setting->get('store_phone') ? ' di ' . $setting->get('store_phone') : '' }}.
+            </div>
         </div>
     @endif
 

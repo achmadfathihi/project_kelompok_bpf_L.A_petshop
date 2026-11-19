@@ -11,7 +11,14 @@
             <div class="card-body">
                 <form method="POST" action="{{ route('owner.pengaturan.update') }}" enctype="multipart/form-data">
                     @csrf @method('PUT')
-
+                    <h4 class="mb-3">Kontak Toko</h4>
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label class="form-control-label">Nomor telepon / WhatsApp</label>
+                            <input type="text" name="store_phone" class="form-control form-control-alternative"
+                                value="{{ old('store_phone', $setting->get('store_phone')) }}" placeholder="contoh: 0812 3456 7890">
+                        </div>
+                    </div>
                     <h4 class="mb-3">Transfer Bank</h4>
                     <div class="row">
                         <div class="col-md-4 form-group">

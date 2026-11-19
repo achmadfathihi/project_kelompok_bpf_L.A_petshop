@@ -11,6 +11,14 @@
     <link href="{{ asset('argon/vendor/nucleo/css/nucleo.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/argon.css') }}" rel="stylesheet">
+    <style>
+        @media print {
+            #sidenav-main, #navbar-main, .header, .no-print, footer { display: none !important; }
+            .main-content { margin-left: 0 !important; }
+            .mt--7 { margin-top: 0 !important; }
+            .card { box-shadow: none !important; border: 1px solid #ddd; }
+        }
+    </style>
     @stack('css')
 </head>
 <body>
