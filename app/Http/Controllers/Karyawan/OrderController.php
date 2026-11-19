@@ -55,10 +55,4 @@ class OrderController extends Controller
         return back()->with('status', 'Pesanan ditandai dikirim. Pelanggan sudah diberi tahu.');
     }
 
-    public function complete(Order $order)
-    {
-        $this->orders->markCompleted($order);
-
-        return back()->with('status', 'Pesanan ditandai selesai.');
-    }
 }

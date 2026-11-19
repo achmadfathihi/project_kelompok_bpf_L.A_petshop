@@ -73,18 +73,17 @@
                             <h4>Dalam Pengiriman</h4>
                             <div class="small text-muted mb-1">Dikirim {{ $order->shipped_at?->format('d/m/Y H:i') }}</div>
                             <div class="mb-3">{{ $order->shipping_note }}</div>
-                            <form method="POST" action="{{ route('karyawan.pesanan.selesai', $order) }}"
-                                  onsubmit="return confirm('Pastikan barang sudah sampai ke pelanggan. Tandai selesai?')">
-                                @csrf
-                                <button class="btn btn-success btn-block">Barang Sudah Sampai, Tandai Selesai</button>
-                            </form>
+                            <div class="small text-muted">
+                                Menunggu pelanggan menekan "Pesanan Sudah Diterima". Jika tidak, pesanan selesai otomatis pada
+                                {{ $order->shipped_at?->copy()->addDays(\App\Models\Order::AUTO_COMPLETE_DAYS)->format('d/m/Y H:i') }}.
+                            </div>
                         </div>
                     </div>
                 @endif
 
                 @if ($order->status === 'selesai')
                     <div class="alert alert-success">
-                        Selesai {{ $order->completed_at?->format('d/m/Y H:i') }}.
+                        Selesai {{ $order->completed_at?->format('d/m/Y H:i') }}{{ $order->completed_auto ? ' (otomatis)' : ' (dikonfirmasi pelanggan)' }}.
                         @if ($order->shipping_note) <div class="small">Pengiriman: {{ $order->shipping_note }}</div> @endif
                     </div>
                 @endif

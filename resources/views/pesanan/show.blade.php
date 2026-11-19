@@ -30,11 +30,27 @@
         <div class="alert alert-info">
             Pesanan Anda sedang dikirim lewat ojek online.
             @if ($order->shipping_note) <div class="small">Catatan toko: {{ $order->shipping_note }}</div> @endif
+
+            <form method="POST" action="{{ route('pesanan.diterima', $order) }}" class="mt-2"
+                onsubmit="return confirm('Pastikan barang sudah sampai dan sesuai. Tandai pesanan ini selesai? Setelah selesai, statusnya tidak bisa diubah sendiri.')">
+                @csrf
+                <button class="btn btn-success btn-sm">Pesanan Sudah Diterima</button>
+            </form>
+
+            @if ($order->shipped_at)
+                <div class="small mt-2">
+                    Jika tidak dikonfirmasi, pesanan ditandai selesai otomatis pada
+                    {{ $order->shipped_at->copy()->addDays(\App\Models\Order::AUTO_COMPLETE_DAYS)->format('d/m/Y H:i') }}.
+                </div>
+            @endif
         </div>
     @endif
 
     @if ($order->status === 'selesai')
-        <div class="alert alert-success">Pesanan selesai. Terima kasih sudah berbelanja di {{ config('app.name') }}.</div>
+        <div class="alert alert-success">
+            Pesanan selesai{{ $order->completed_auto ? ' (otomatis)' : '' }}. Terima kasih sudah berbelanja di {{ config('app.name') }}.
+            <div class="small mt-1">Ada masalah dengan pesanan? Hubungi toko.</div>
+        </div>
     @endif
 
     @if ($order->status === 'menunggu_pembayaran')

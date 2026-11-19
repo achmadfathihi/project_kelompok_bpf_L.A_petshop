@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pesanan/{order}', [CustomerOrderController::class, 'show'])->name('pesanan.show');
         Route::post('pesanan/{order}/batal', [CustomerOrderController::class, 'cancel'])->name('pesanan.batal');
         Route::post('pesanan/{order}/bayar', [PaymentController::class, 'store'])->name('pesanan.bayar');
+        Route::post('pesanan/{order}/diterima', [CustomerOrderController::class, 'received'])->name('pesanan.diterima');
 
         Route::get('poin', [PointController::class, 'index'])->name('poin.index');
 
@@ -80,7 +81,6 @@ Route::middleware('auth')->group(function () {
         Route::get('pesanan', [KaryawanOrderController::class, 'index'])->name('pesanan.index');
         Route::get('pesanan/{order}', [KaryawanOrderController::class, 'show'])->name('pesanan.show');
         Route::post('pesanan/{order}/kirim', [KaryawanOrderController::class, 'ship'])->name('pesanan.kirim');
-        Route::post('pesanan/{order}/selesai', [KaryawanOrderController::class, 'complete'])->name('pesanan.selesai');
     });
 
     // ===== Kasir (owner juga boleh) =====

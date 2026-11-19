@@ -41,4 +41,13 @@ class CustomerOrderController extends Controller
 
         return redirect()->route('pesanan.show', $order)->with('status', 'Pesanan dibatalkan. Stok dan poin sudah dikembalikan.');
     }
+
+    public function received(Order $order, OrderService $orders)
+    {
+        $this->ownOrFail($order);
+
+        $orders->confirmReceived($order);
+
+        return redirect()->route('pesanan.show', $order)->with('status', 'Terima kasih! Pesanan ditandai selesai.');
+    }
 }

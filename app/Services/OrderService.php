@@ -207,22 +207,81 @@ class OrderService
         });
     }
 
-    /** Karyawan menandai pesanan sudah sampai ke pelanggan. */
-    public function markCompleted(Order $order): void
+    /** Pelanggan mengonfirmasi barang sudah diterima. */
+    public function confirmReceived(Order $order): void
     {
         DB::transaction(function () use ($order) {
             $order = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
             $this->mustBe($order, ['dikirim']);
 
-            $order->update(['status' => 'selesai', 'completed_at' => now()]);
+            $order->update(['status' => 'selesai', 'completed_at' => now(), 'completed_auto' => false]);
+        });
+    }
 
+    /**
+     * Menandai selesai otomatis pesanan yang sudah AUTO_COMPLETE_DAYS hari berstatus dikirim.
+     *
+     * @return int jumlah pesanan yang ditandai selesai
+     */
+    public function completeDelivered(): int
+    {
+        $due = Order::where('channel', 'online')
+            ->where('status', 'dikirim')
+            ->whereNotNull('shipped_at')
+            ->where('shipped_at', '<=', now()->subDays(Order::AUTO_COMPLETE_DAYS))
+            ->get();
+
+        $jumlah = 0;
+
+        foreach ($due as $order) {
+            try {
+                DB::transaction(function () use ($order) {
+                    $locked = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
+                    $this->mustBe($locked, ['dikirim']);
+
+                    $locked->update(['status' => 'selesai', 'completed_at' => now(), 'completed_auto' => true]);
+
+                    $this->notifier->to(
+                        $locked->customer_id,
+                        'Pesanan selesai otomatis',
+                        $locked->invoice_no . ' ditandai selesai karena sudah lebih dari '
+                            . Order::AUTO_COMPLETE_DAYS . ' hari sejak dikirim. Ada masalah dengan pesanan? Hubungi toko.',
+                        route('pesanan.show', $locked, false)
+                    );
+                });
+
+                $jumlah++;
+            } catch (ValidationException $e) {
+                // Pelanggan baru saja menekan tombol diterima, lewati
+            }
+        }
+
+        return $jumlah;
+    }
+
+    /**
+     * Mengingatkan pelanggan untuk mengonfirmasi penerimaan. Satu pengingat per pesanan
+     * (dijaga oleh dedupe_key, jadi aman dijalankan berulang).
+     */
+    public function remindReceipt(): void
+    {
+        $due = Order::where('channel', 'online')
+            ->where('status', 'dikirim')
+            ->whereNotNull('shipped_at')
+            ->where('shipped_at', '<=', now()->subHours(Order::RECEIPT_REMINDER_HOURS))
+            ->where('shipped_at', '>', now()->subDays(Order::AUTO_COMPLETE_DAYS))
+            ->get();
+
+        foreach ($due as $order) {
             $this->notifier->to(
                 $order->customer_id,
-                'Pesanan selesai',
-                $order->invoice_no . ' sudah selesai. Terima kasih sudah berbelanja!',
-                route('pesanan.show', $order, false)
+                'Pesanan sudah sampai?',
+                $order->invoice_no . ': mohon konfirmasi jika barang sudah diterima. Jika tidak, pesanan selesai otomatis pada '
+                    . $order->shipped_at->copy()->addDays(Order::AUTO_COMPLETE_DAYS)->format('d/m/Y H:i') . '.',
+                route('pesanan.show', $order, false),
+                'pengingat-terima-' . $order->id
             );
-        });
+        }
     }
 
     /**

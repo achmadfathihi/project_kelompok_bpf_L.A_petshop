@@ -25,6 +25,8 @@ class Order extends Model
     public const MAX_REJECTIONS  = 3;   // penolakan bukti ke-3 membatalkan pesanan
     public const MIN_RETRY_HOURS = 6;   // waktu minimal untuk mengunggah ulang setelah ditolak
     public const SHIPPING_TIMEOUT_HOURS = 24;  // ongkir tidak diisi selama ini: pesanan dibatalkan otomatis
+    public const AUTO_COMPLETE_DAYS     = 2;   // selesai otomatis setelah sekian hari sejak dikirim
+    public const RECEIPT_REMINDER_HOURS = 24;  // pengingat "sudah sampai?" setelah sekian jam sejak dikirim
     public const MAX_UNPAID = 3;  // maksimal pesanan online yang belum diverifikasi pembayarannya per pelanggan
 
     // Aturan poin: tiap kelipatan Rp25.000 mendapat 300 poin
@@ -36,7 +38,7 @@ class Order extends Model
         'recipient_name', 'recipient_phone', 'address',
         'items_total', 'points_used', 'shipping_fee', 'points_earned',
         'pay_before', 'cancelled_at', 'cancel_reason', 'payment_method',
-        'paid_at', 'shipping_note', 'shipped_at', 'completed_at',
+        'paid_at', 'shipping_note', 'shipped_at', 'completed_at', 'completed_auto',
     ];
 
     protected $casts = [
@@ -45,6 +47,7 @@ class Order extends Model
         'paid_at' => 'datetime',
         'shipped_at'   => 'datetime',
         'completed_at' => 'datetime',
+        'completed_auto' => 'boolean',
     ];
 
     public static function pointsFor(int $amount): int
