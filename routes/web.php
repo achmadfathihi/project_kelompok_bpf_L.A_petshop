@@ -27,6 +27,7 @@ use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\MemberController;
 use App\Http\Controllers\Owner\ReportController;
 use App\Http\Controllers\Owner\StaffController;
+use App\Http\Controllers\PasswordResetController;
 
 // Katalog publik (bisa dilihat tanpa login)
 Route::get('/', [CatalogController::class, 'index'])->name('beranda');
@@ -36,6 +37,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/lupa-password', [PasswordResetController::class, 'request'])->name('password.request');
+    Route::post('/lupa-password', [PasswordResetController::class, 'email'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/atur-ulang-password/{token}', [PasswordResetController::class, 'form'])->name('password.reset');
+    Route::post('/atur-ulang-password', [PasswordResetController::class, 'update'])->middleware('throttle:5,1')->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -65,6 +70,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('profil', [ProfileController::class, 'edit'])->name('profil.edit');
         Route::put('profil', [ProfileController::class, 'update'])->name('profil.update');
+        Route::put('profil/password', [ProfileController::class, 'password'])->name('profil.password');
     });
 
     // ===== Karyawan (owner juga boleh) =====

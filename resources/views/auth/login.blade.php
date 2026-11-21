@@ -24,6 +24,7 @@
                     <button class="btn btn-primary w-100">Masuk</button>
                 </form>
                 <p class="mt-3 mb-0 small">Belum punya akun? <a href="{{ route('register') }}">Daftar</a></p>
+                <p class="mb-0 small"><a href="{{ route('password.request') }}">Lupa password?</a></p>
             </div>
         </div>
     </div>

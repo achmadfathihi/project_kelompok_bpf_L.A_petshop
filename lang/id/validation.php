@@ -1,0 +1,53 @@
+<?php
+
+return [
+    'after'            => ':attribute harus berupa tanggal setelah :date.',
+    'after_or_equal'   => ':attribute harus berupa tanggal setelah atau sama dengan :date.',
+    'array'            => ':attribute harus berupa daftar.',
+    'confirmed'        => 'Konfirmasi :attribute tidak cocok.',
+    'current_password' => 'Password saat ini salah.',
+    'date'             => ':attribute bukan tanggal yang valid.',
+    'different'        => ':attribute dan :other harus berbeda.',
+    'email'            => ':attribute harus berupa alamat email yang valid.',
+    'exists'           => ':attribute yang dipilih tidak valid.',
+    'image'            => ':attribute harus berupa gambar.',
+    'in'               => ':attribute yang dipilih tidak valid.',
+    'integer'          => ':attribute harus berupa bilangan bulat.',
+    'mimes'            => ':attribute harus berupa berkas bertipe: :values.',
+    'numeric'          => ':attribute harus berupa angka.',
+    'regex'            => 'Format :attribute tidak valid.',
+    'required'         => ':attribute wajib diisi.',
+    'required_if'      => ':attribute wajib diisi.',
+    'string'           => ':attribute harus berupa teks.',
+    'unique'           => ':attribute sudah digunakan.',
+    'uploaded'         => ':attribute gagal diunggah.',
+
+    'min' => [
+        'numeric' => ':attribute minimal :min.',
+        'file'    => 'Ukuran :attribute minimal :min kilobyte.',
+        'string'  => ':attribute minimal :min karakter.',
+        'array'   => ':attribute minimal berisi :min item.',
+    ],
+    'max' => [
+        'numeric' => ':attribute maksimal :max.',
+        'file'    => 'Ukuran :attribute maksimal :max kilobyte.',
+        'string'  => ':attribute maksimal :max karakter.',
+        'array'   => ':attribute maksimal berisi :max item.',
+    ],
+
+    'attributes' => [
+        'name' => 'nama', 'email' => 'email', 'phone' => 'nomor HP',
+        'password' => 'password', 'password_confirmation' => 'ulangi password',
+        'current_password' => 'password saat ini', 'role' => 'role', 'address' => 'alamat',
+        'recipient_name' => 'nama penerima', 'recipient_phone' => 'nomor HP penerima',
+        'category_id' => 'kategori', 'brand' => 'merek', 'size' => 'ukuran', 'price' => 'harga',
+        'min_stock' => 'batas stok menipis', 'photo' => 'foto produk', 'proof' => 'bukti pembayaran',
+        'method' => 'metode bayar', 'payment_method' => 'metode bayar', 'qty' => 'jumlah',
+        'expired_at' => 'tanggal kedaluwarsa', 'note' => 'catatan', 'type' => 'jenis',
+        'product_id' => 'produk', 'shipping_fee' => 'ongkir', 'reason' => 'alasan',
+        'items' => 'barang', 'member_id' => 'member', 'qris_image' => 'gambar QRIS',
+        'bank_name' => 'nama bank', 'bank_account' => 'nomor rekening', 'bank_holder' => 'atas nama',
+        'store_phone' => 'nomor telepon toko', 'dari' => 'tanggal awal', 'sampai' => 'tanggal akhir',
+        'token' => 'tautan reset',
+    ],
+];
