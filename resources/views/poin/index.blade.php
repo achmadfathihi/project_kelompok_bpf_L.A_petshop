@@ -1,39 +1,95 @@
 @extends('layouts.app')
 @section('title', 'Poin Saya')
 
-@section('content')
-    <div class="p-4 mb-4 bg-white rounded shadow-sm">
-        <div class="text-muted">Saldo poin Anda</div>
-        <div class="display-5 fw-bold">{{ number_format($saldo, 0, ',', '.') }}</div>
-        <div class="text-muted small">
-            Setara potongan Rp{{ number_format($saldo, 0, ',', '.') }}.
-            Setiap belanja kelipatan Rp25.000 mendapat 300 poin, dan 1 poin = Rp1 potongan harga.
-        </div>
-    </div>
+@section('wide')
+@php
+    $user    = auth()->user();
+    $step    = \App\Models\Order::POINT_STEP;
+    $reward  = \App\Models\Order::POINT_REWARD;
+    $angka   = fn ($n) => number_format($n, 0, ',', '.');
+    $jenis   = [
+        'earn'   => ['i-star',    'ps-hist-earn',   'Poin didapat'],
+        'redeem' => ['i-gift',    'ps-hist-redeem', 'Dipakai'],
+        'refund' => ['i-refresh', 'ps-hist-refund', 'Dikembalikan'],
+    ];
+    $tabs = ['semua' => 'Semua', 'masuk' => 'Poin masuk', 'dipakai' => 'Dipakai'];
+@endphp
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-white"><strong>Riwayat Poin</strong></div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead class="table-light"><tr><th>Tanggal</th><th>Keterangan</th><th>Jenis</th><th class="text-end">Poin</th><th class="text-end">Saldo</th></tr></thead>
-                <tbody>
-                    @forelse ($history as $h)
-                        @php [$label, $warna] = \App\Models\PointTransaction::TYPES[$h->type] ?? [$h->type, 'secondary']; @endphp
-                        <tr>
-                            <td>{{ $h->created_at->format('d/m/Y H:i') }}</td>
-                            <td>{{ $h->note }}</td>
-                            <td><span class="badge text-bg-{{ $warna }}">{{ $label }}</span></td>
-                            <td class="text-end {{ $h->points < 0 ? 'text-danger' : 'text-success' }}">
-                                {{ $h->points > 0 ? '+' : '' }}{{ number_format($h->points, 0, ',', '.') }}
-                            </td>
-                            <td class="text-end">{{ number_format($h->balance_after, 0, ',', '.') }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="text-center text-muted py-4">Belum ada riwayat poin.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+@include('layouts.partials.page-head', ['judul' => 'Poin Saya', 'sub' => 'Kumpulkan poin di setiap belanja dan pakai sebagai potongan harga.'])
+
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="ps-pointcard">
+                <svg class="ps-pointcard-paw" aria-hidden="true"><use href="#i-paw"/></svg>
+                <div class="ps-pointcard-brand">Member {{ config('app.name') }}</div>
+                <div class="ps-pointcard-name">{{ $user->name }}</div>
+                <div class="ps-pointcard-label">Saldo poin</div>
+                <div class="ps-pointcard-balance">{{ $angka($saldo) }} <small>poin</small></div>
+                <span class="ps-pointcard-value">Setara potongan <strong>Rp{{ $angka($saldo) }}</strong></span>
+                <div class="ps-pointcard-foot">Member sejak {{ $user->created_at->translatedFormat('F Y') }}</div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-6"><div class="ps-mini"><small>Total didapat</small><strong class="text-success">+{{ $angka($didapat) }}</strong></div></div>
+                <div class="col-6"><div class="ps-mini"><small>Total dipakai</small><strong style="color:#A94508">{{ $angka($dipakai) }}</strong></div></div>
+            </div>
+
+            <div class="ps-panel mt-4">
+                <div class="ps-panel-title"><svg width="20" height="20"><use href="#i-gift"/></svg> Cara Kerja Poin</div>
+                <ul class="ps-how">
+                    <li>
+                        <span class="ps-how-icon"><svg width="20" height="20"><use href="#i-cart"/></svg></span>
+                        <div><strong>Belanja</strong><div class="small text-muted">Setiap kelipatan Rp{{ $angka($step) }} dari harga barang mendapat {{ $angka($reward) }} poin.</div></div>
+                    </li>
+                    <li>
+                        <span class="ps-how-icon"><svg width="20" height="20"><use href="#i-check"/></svg></span>
+                        <div><strong>Poin masuk</strong><div class="small text-muted">Otomatis setelah pembayaran diverifikasi kasir.</div></div>
+                    </li>
+                    <li>
+                        <span class="ps-how-icon"><svg width="20" height="20"><use href="#i-tag"/></svg></span>
+                        <div><strong>Pakai saat checkout</strong><div class="small text-muted">1 poin = potongan Rp1, hanya untuk harga barang (tidak termasuk ongkir).</div></div>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="card-footer bg-white">{{ $history->links('pagination::bootstrap-5') }}</div>
+
+        <div class="col-lg-7">
+            <div class="ps-panel">
+                <div class="ps-panel-title"><svg width="20" height="20"><use href="#i-clock"/></svg> Riwayat Poin</div>
+
+                <div class="ps-tabs">
+                    @foreach ($tabs as $key => $label)
+                        <a href="{{ route('poin.index', ['tab' => $key]) }}" class="ps-tab {{ $tab === $key ? 'active' : '' }}">{{ $label }}</a>
+                    @endforeach
+                </div>
+
+                @forelse ($history as $h)
+                    @php [$ic, $kelas, $label] = $jenis[$h->type] ?? ['i-star', 'ps-hist-earn', $h->type]; @endphp
+                    <div class="ps-hist">
+                        <span class="ps-hist-icon {{ $kelas }}"><svg width="20" height="20"><use href="#{{ $ic }}"/></svg></span>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">{{ $h->note ?: $label }}</div>
+                            <div class="small text-muted">
+                                {{ $label }} · {{ $h->created_at->translatedFormat('d M Y, H:i') }}
+                                @if ($h->order) · <a href="{{ route('pesanan.show', $h->order) }}">Lihat pesanan</a> @endif
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="ps-hist-points {{ $h->points < 0 ? 'neg' : 'pos' }}">{{ $h->points > 0 ? '+' : '' }}{{ $angka($h->points) }}</div>
+                            <div class="small text-muted">Saldo {{ $angka($h->balance_after) }}</div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-5 text-muted">
+                        <div class="ps-empty-icon" style="width:72px;height:72px"><svg width="32" height="32"><use href="#i-star"/></svg></div>
+                        Belum ada riwayat poin{{ $tab === 'semua' ? '. Poin muncul setelah pembayaran pesanan Anda diverifikasi.' : ' di tab ini.' }}
+                    </div>
+                @endforelse
+
+                <div class="mt-3 d-flex justify-content-center">{{ $history->links('pagination::bootstrap-5') }}</div>
+            </div>
+        </div>
     </div>
+</div>
 @endsection

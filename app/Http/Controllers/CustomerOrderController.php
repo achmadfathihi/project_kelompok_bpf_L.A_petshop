@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Services\OrderService;
+use Illuminate\Http\Request;
 
 class CustomerOrderController extends Controller
 {
@@ -13,14 +14,35 @@ class CustomerOrderController extends Controller
         abort_unless($order->customer_id === auth()->id(), 404);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::where('customer_id', auth()->id())
-            ->withCount('items')
-            ->latest('id')
-            ->paginate(10);
+        // Kelompok status untuk tab
+        $groups = [
+            'bayar'   => ['menunggu_ongkir', 'menunggu_pembayaran', 'menunggu_verifikasi'],
+            'proses'  => ['diproses'],
+            'kirim'   => ['dikirim'],
+            'selesai' => ['selesai'],
+            'batal'   => ['dibatalkan'],
+        ];
 
-        return view('pesanan.index', compact('orders'));
+        $tab = in_array($request->tab, array_keys($groups), true) ? $request->tab : 'semua';
+
+        $perStatus = Order::where('customer_id', auth()->id())
+            ->selectRaw('status, COUNT(*) as jumlah')->groupBy('status')->pluck('jumlah', 'status');
+
+        $counts = ['semua' => (int) $perStatus->sum()];
+        foreach ($groups as $key => $statuses) {
+            $counts[$key] = (int) collect($statuses)->sum(fn ($s) => $perStatus->get($s, 0));
+        }
+
+        $orders = Order::where('customer_id', auth()->id())
+            ->with('items.product')->withCount('items')
+            ->when($tab !== 'semua', fn ($q) => $q->whereIn('status', $groups[$tab]))
+            ->latest('id')
+            ->paginate(8)
+            ->withQueryString();
+
+        return view('pesanan.index', compact('orders', 'tab', 'counts'));
     }
 
     public function show(Order $order)
@@ -28,7 +50,7 @@ class CustomerOrderController extends Controller
         $this->ownOrFail($order);
 
         return view('pesanan.show', [
-            'order'   => $order->load(['items', 'payments']),
+            'order'   => $order->load(['items.product', 'payments']),
             'setting' => \App\Models\Setting::pluck('value', 'key'),
         ]);
     }

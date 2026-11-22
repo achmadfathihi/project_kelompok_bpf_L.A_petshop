@@ -4,19 +4,6 @@
     $jumlahKeranjang = $pelanggan ? (int) array_sum(session('cart', [])) : 0;
 @endphp
 
-<div class="ps-topbar">
-    <div class="container d-flex flex-wrap justify-content-between gap-2 py-2">
-        <span><svg class="ps-ico" width="15" height="15"><use href="#i-clock"/></svg> Buka setiap hari 07.00 - 22.40 WIB</span>
-        <span class="d-none d-sm-inline">
-            @if ($tokoTelp)
-                <svg class="ps-ico" width="15" height="15"><use href="#i-phone"/></svg>
-                Hubungi toko: <a href="tel:{{ preg_replace('/[^0-9+]/', '', $tokoTelp) }}">{{ $tokoTelp }}</a>
-                &nbsp;·&nbsp;
-            @endif
-            <svg class="ps-ico" width="15" height="15"><use href="#i-pin"/></svg> Rumbai, Pekanbaru
-        </span>
-    </div>
-</div>
 
 <header class="ps-header">
     <div class="container">

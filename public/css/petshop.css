@@ -173,5 +173,160 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: var(--ps-fon
 .ps-auth-main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2rem 1.25rem; background: #fff; }
 .ps-auth-card { width: 100%; max-width: 430px; margin: 0 auto; }
 
+
+/* =========================================================
+   Halaman dalam: Keranjang, Pesanan, Poin
+   ========================================================= */
+
+/* ---- Kepala halaman ---- */
+.ps-pagehead { background: linear-gradient(135deg, var(--ps-cream) 0%, var(--ps-cream-2) 100%);
+  border-bottom: 1px solid var(--ps-line); padding: 1.6rem 0 1.4rem; }
+.ps-crumb { font-size: .85rem; color: var(--ps-muted); margin-bottom: .35rem; }
+.ps-crumb a { color: var(--ps-muted); text-decoration: none; }
+.ps-crumb a:hover { color: var(--ps-orange-strong); }
+.ps-pagehead h1 { margin: 0; font-size: clamp(1.5rem, 3vw, 2rem); }
+
+/* ---- Panel, lencana status ---- */
+.ps-panel { background: #fff; border: 1px solid var(--ps-line); border-radius: var(--ps-radius); padding: 1.25rem 1.35rem; }
+.ps-panel-title { display: flex; align-items: center; gap: .55rem; font-family: var(--ps-font-head); font-weight: 700;
+  font-size: 1.05rem; color: var(--ps-teal); margin-bottom: 1rem; }
+.ps-panel-title svg { color: var(--ps-orange-strong); }
+.ps-pill { display: inline-block; padding: .28rem .85rem; border-radius: 999px; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+.ps-pill-warning   { background: #FFF0C2; color: #7A5300; }
+.ps-pill-info      { background: #DCEFF4; color: #14516B; }
+.ps-pill-primary   { background: #FFE3CC; color: #8A3B05; }
+.ps-pill-success   { background: #DDF1E5; color: #1E6B40; }
+.ps-pill-secondary { background: #ECEFF1; color: #4A5A63; }
+
+/* ---- Langkah belanja (Keranjang) ---- */
+.ps-flow { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; list-style: none; padding: 0; margin: 0;
+  font-size: .85rem; font-weight: 600; color: var(--ps-muted); }
+.ps-flow li { display: flex; align-items: center; gap: .5rem; }
+.ps-flow li::after { content: ''; width: 28px; height: 2px; background: #E7DCCB; display: block; }
+.ps-flow li:last-child::after { display: none; }
+.ps-flow-num { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #EFE6D8; color: var(--ps-muted); font-size: .8rem; }
+.ps-flow li.current { color: var(--ps-teal); }
+.ps-flow li.current .ps-flow-num { background: var(--ps-orange-strong); color: #fff; }
+
+/* ---- Kartu barang di keranjang ---- */
+.ps-cart-item { display: grid; grid-template-columns: 96px 1fr auto; gap: 1rem; align-items: center; background: #fff;
+  border: 1px solid var(--ps-line); border-radius: var(--ps-radius); padding: 1rem; margin-bottom: .9rem; }
+.ps-cart-item.is-problem { border-color: #F3C77B; background: #FFFBF1; }
+.ps-cart-img { width: 96px; height: 96px; object-fit: cover; border-radius: 12px; background: var(--ps-cream); }
+.ps-price-sm { font-weight: 700; color: var(--ps-orange-dark); }
+.ps-warn { display: flex; gap: .4rem; align-items: flex-start; font-size: .82rem; color: #7A5300; background: #FFF0C2;
+  border-radius: 10px; padding: .35rem .6rem; margin-top: .5rem; }
+.ps-cart-actions { display: flex; flex-direction: column; align-items: flex-end; gap: .6rem; }
+.ps-cart-sub { font-family: var(--ps-font-head); font-weight: 700; color: var(--ps-teal); font-size: 1.1rem; }
+.ps-stepper { display: inline-flex; align-items: center; border: 1px solid #E6D8C6; border-radius: 999px; overflow: hidden; background: #fff; }
+.ps-stepper button { border: 0; background: var(--ps-cream); color: var(--ps-teal); width: 36px; height: 36px; font-size: 1.1rem; font-weight: 700; }
+.ps-stepper button:hover:not(:disabled) { background: var(--ps-cream-2); }
+.ps-stepper button:disabled { opacity: .4; }
+.ps-stepper input { width: 48px; border: 0; text-align: center; font-weight: 700; padding: 0; appearance: textfield; -moz-appearance: textfield; }
+.ps-stepper input::-webkit-outer-spin-button, .ps-stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ps-stepper input:focus { outline: none; }
+.ps-trash { border: 0; background: transparent; color: var(--ps-muted); padding: .25rem; }
+.ps-trash:hover { color: #C0392B; }
+@media (max-width: 575.98px) {
+  .ps-cart-item { grid-template-columns: 72px 1fr; }
+  .ps-cart-img { width: 72px; height: 72px; }
+  .ps-cart-actions { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
+}
+
+/* ---- Ringkasan ---- */
+.ps-summary { position: sticky; top: 1rem; background: #fff; border: 1px solid var(--ps-line); border-radius: var(--ps-radius);
+  padding: 1.4rem; box-shadow: var(--ps-shadow); }
+.ps-sum-row { display: flex; justify-content: space-between; margin-bottom: .6rem; }
+.ps-sum-total { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--ps-font-head); font-size: 1.1rem; color: var(--ps-teal); font-weight: 700; }
+.ps-sum-total strong { font-size: 1.5rem; color: var(--ps-orange-dark); }
+.ps-sum-note { display: flex; gap: .5rem; align-items: center; background: var(--ps-cream); border-radius: 12px; padding: .6rem .8rem;
+  font-size: .85rem; color: var(--ps-teal); margin: .8rem 0; }
+.ps-sum-note svg { color: var(--ps-orange); flex: none; }
+.ps-trust { list-style: none; padding: 0; margin: 1.1rem 0 0; font-size: .82rem; color: var(--ps-muted); }
+.ps-trust li { display: flex; gap: .55rem; align-items: flex-start; margin-bottom: .5rem; }
+.ps-trust svg { color: var(--ps-orange-strong); flex: none; margin-top: 2px; }
+
+/* ---- Keadaan kosong ---- */
+.ps-empty { text-align: center; padding: 3.5rem 1rem; background: #fff; border: 1px dashed #E6D8C6; border-radius: var(--ps-radius); }
+.ps-empty-icon { width: 96px; height: 96px; margin: 0 auto 1rem; border-radius: 50%; background: var(--ps-cream); color: var(--ps-orange-strong); display: grid; place-items: center; }
+
+/* ---- Tab penyaring ---- */
+.ps-tabs { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .4rem; margin-bottom: 1.1rem; }
+.ps-tab { white-space: nowrap; display: inline-flex; align-items: center; gap: .45rem; padding: .5rem 1rem; border-radius: 999px;
+  border: 1px solid var(--ps-line); background: #fff; color: var(--ps-teal); font-weight: 600; text-decoration: none; font-size: .9rem; }
+.ps-tab:hover { border-color: var(--ps-orange); color: var(--ps-orange-dark); }
+.ps-tab.active { background: var(--ps-orange-strong); border-color: var(--ps-orange-strong); color: #fff; }
+.ps-tab-count { background: var(--ps-cream-2); color: var(--ps-orange-dark); border-radius: 999px; font-size: .75rem; padding: .05rem .5rem; font-weight: 700; }
+.ps-tab.active .ps-tab-count { background: #fff; }
+
+/* ---- Kartu pesanan ---- */
+.ps-order { background: #fff; border: 1px solid var(--ps-line); border-radius: var(--ps-radius); margin-bottom: 1rem; overflow: hidden; transition: box-shadow .2s; }
+.ps-order:hover { box-shadow: var(--ps-shadow); }
+.ps-order-head { display: flex; justify-content: space-between; align-items: center; gap: .75rem; flex-wrap: wrap;
+  padding: .85rem 1.2rem; background: var(--ps-cream); border-bottom: 1px solid var(--ps-line); }
+.ps-order-no { font-family: var(--ps-font-head); font-weight: 700; color: var(--ps-teal); }
+.ps-order-body { display: flex; align-items: center; gap: 1.25rem; padding: 1rem 1.2rem; flex-wrap: wrap; }
+.ps-thumbs { display: flex; }
+.ps-thumbs img, .ps-thumb-more { width: 56px; height: 56px; border-radius: 12px; border: 2px solid #fff; object-fit: cover;
+  margin-left: -14px; background: var(--ps-cream); box-shadow: 0 1px 4px rgba(0, 0, 0, .15); }
+.ps-thumbs img:first-child { margin-left: 0; }
+.ps-thumb-more { display: grid; place-items: center; font-weight: 700; color: var(--ps-orange-dark); font-size: .9rem; }
+.ps-order-main { flex: 1; min-width: 180px; }
+.ps-order-total { text-align: right; }
+.ps-order-foot { display: flex; justify-content: space-between; align-items: center; gap: .75rem; flex-wrap: wrap;
+  padding: .8rem 1.2rem; border-top: 1px dashed var(--ps-line); font-size: .88rem; color: var(--ps-muted); }
+
+/* ---- Garis waktu status ---- */
+.ps-steps { display: flex; list-style: none; padding: 0; margin: 0; }
+.ps-steps li { flex: 1; position: relative; text-align: center; padding: 0 .25rem; }
+.ps-steps li::before { content: ''; position: absolute; top: 19px; left: -50%; width: 100%; height: 3px; background: #E7DCCB; z-index: 0; }
+.ps-steps li:first-child::before { display: none; }
+.ps-step-dot { position: relative; z-index: 1; width: 40px; height: 40px; border-radius: 50%; margin: 0 auto .5rem; display: grid;
+  place-items: center; background: #fff; border: 3px solid #E7DCCB; color: #B7A992; }
+.ps-steps li.done::before, .ps-steps li.current::before { background: #2E7D4F; }
+.ps-steps li.done .ps-step-dot { background: #2E7D4F; border-color: #2E7D4F; color: #fff; }
+.ps-steps li.current .ps-step-dot { border-color: var(--ps-orange); color: var(--ps-orange-strong); box-shadow: 0 0 0 5px rgba(242, 140, 40, .2); }
+.ps-step-label { font-weight: 700; font-size: .85rem; color: var(--ps-teal); line-height: 1.2; }
+.ps-step-time { font-size: .75rem; color: var(--ps-muted); min-height: 1em; }
+.ps-steps li.current .ps-step-time { color: var(--ps-orange-dark); font-weight: 600; }
+@media (max-width: 767.98px) {
+  .ps-steps { flex-direction: column; gap: 1rem; }
+  .ps-steps li { display: flex; text-align: left; align-items: center; gap: .9rem; padding: 0; }
+  .ps-steps li::before { top: auto; bottom: 100%; left: 18px; width: 3px; height: 1rem; }
+  .ps-step-dot { margin: 0; flex: none; }
+}
+.ps-cancelled { display: flex; gap: .8rem; background: #FBE3E0; color: #7B2018; border-radius: 12px; padding: 1rem 1.1rem; }
+.ps-line { display: flex; align-items: center; gap: .9rem; padding: .7rem 0; border-bottom: 1px solid var(--ps-line); }
+.ps-line:last-child { border-bottom: 0; }
+.ps-line-img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: var(--ps-cream); flex: none; }
+
+/* ---- Poin ---- */
+.ps-pointcard { position: relative; overflow: hidden; color: #fff; border-radius: 22px; padding: 1.6rem;
+  background: linear-gradient(135deg, var(--ps-teal) 0%, var(--ps-teal-deep) 100%); box-shadow: var(--ps-shadow); }
+.ps-pointcard-paw { position: absolute; right: -18px; bottom: -24px; width: 170px; height: 170px; color: rgba(255, 255, 255, .08); }
+.ps-pointcard-brand { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: #FFC58A; font-weight: 700; }
+.ps-pointcard-name { font-family: var(--ps-font-head); font-size: 1.15rem; margin: .2rem 0 1.4rem; }
+.ps-pointcard-label { font-size: .85rem; color: #BFD6DD; }
+.ps-pointcard-balance { font-family: var(--ps-font-head); font-size: 3rem; font-weight: 700; line-height: 1.05; }
+.ps-pointcard-balance small { font-size: 1rem; font-weight: 400; color: #BFD6DD; }
+.ps-pointcard-value { display: inline-block; margin-top: .7rem; background: rgba(255, 255, 255, .14); border-radius: 999px; padding: .3rem .9rem; font-size: .85rem; }
+.ps-pointcard-foot { margin-top: 1.4rem; font-size: .8rem; color: #A9C2CB; position: relative; }
+.ps-mini { background: #fff; border: 1px solid var(--ps-line); border-radius: var(--ps-radius); padding: .9rem 1rem; height: 100%; }
+.ps-mini small { color: var(--ps-muted); display: block; }
+.ps-mini strong { font-family: var(--ps-font-head); font-size: 1.3rem; }
+.ps-how { list-style: none; padding: 0; margin: 0; }
+.ps-how li { display: flex; gap: .8rem; margin-bottom: 1rem; }
+.ps-how li:last-child { margin-bottom: 0; }
+.ps-how-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--ps-cream-2); color: var(--ps-orange-strong); display: grid; place-items: center; flex: none; }
+.ps-hist { display: flex; gap: .9rem; align-items: center; padding: .9rem 0; border-bottom: 1px solid var(--ps-line); }
+.ps-hist:last-child { border-bottom: 0; }
+.ps-hist-icon { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.ps-hist-earn   { background: #DDF1E5; color: #1E6B40; }
+.ps-hist-redeem { background: #FFE3CC; color: #8A3B05; }
+.ps-hist-refund { background: #DCEFF4; color: #14516B; }
+.ps-hist-points { font-family: var(--ps-font-head); font-weight: 700; font-size: 1.1rem; }
+.ps-hist-points.pos { color: #1E6B40; }
+.ps-hist-points.neg { color: #A94508; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 @media (max-width: 575.98px) { .ps-hero-row { min-height: 0; padding-bottom: 3.2rem; } .ps-hero-text { font-size: 1rem; } }
