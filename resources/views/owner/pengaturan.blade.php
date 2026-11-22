@@ -18,6 +18,18 @@
                             <input type="text" name="store_phone" class="form-control form-control-alternative"
                                 value="{{ old('store_phone', $setting->get('store_phone')) }}" placeholder="contoh: 0812 3456 7890">
                         </div>
+                        <div class="row">
+                            <div class="col-md-8 form-group">
+                                <label class="form-control-label">Alamat lengkap toko (tampil di struk)</label>
+                                <input type="text" name="store_address" class="form-control form-control-alternative"
+                                    value="{{ old('store_address', $setting->get('store_address')) }}" placeholder="contoh: Jl. ..., Rumbai, Pekanbaru">
+                            </div>
+                            <div class="col-md-8 form-group">
+                                <label class="form-control-label">Pesan penutup struk</label>
+                                <input type="text" name="receipt_footer" class="form-control form-control-alternative"
+                                    value="{{ old('receipt_footer', $setting->get('receipt_footer')) }}" placeholder="Terima kasih sudah berbelanja!">
+                            </div>
+                        </div>
                     </div>
                     <h4 class="mb-3">Transfer Bank</h4>
                     <div class="row">
