@@ -28,6 +28,7 @@ use App\Http\Controllers\Owner\MemberController;
 use App\Http\Controllers\Owner\ReportController;
 use App\Http\Controllers\Owner\StaffController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\Kasir\ReceiptController;
 
 // Katalog publik (bisa dilihat tanpa login)
 Route::get('/', [CatalogController::class, 'index'])->name('beranda');
@@ -91,6 +92,7 @@ Route::middleware('auth')->group(function () {
         Route::post('batch/{batch}/keluarkan', [BatchController::class, 'writeOff'])->name('batch.keluarkan');
         Route::get('pesanan', [KaryawanOrderController::class, 'index'])->name('pesanan.index');
         Route::get('pesanan/{order}', [KaryawanOrderController::class, 'show'])->name('pesanan.show');
+        Route::get('pesanan/{order}/cetak', [KaryawanOrderController::class, 'cetak'])->name('pesanan.cetak');
         Route::post('pesanan/{order}/kirim', [KaryawanOrderController::class, 'ship'])->name('pesanan.kirim');
     });
 
@@ -107,6 +109,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('transaksi/baru', [PosController::class, 'create'])->name('transaksi.create');
         Route::post('transaksi', [PosController::class, 'store'])->name('transaksi.store');
+        Route::get('transaksi/{order}/struk', [ReceiptController::class, 'show'])->name('struk');
         Route::get('member', [PosController::class, 'member'])->middleware('throttle:60,1')->name('member');
     });
 

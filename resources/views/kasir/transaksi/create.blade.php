@@ -58,11 +58,26 @@
 
                             <div class="form-group mt-3">
                                 <label class="form-control-label">Metode bayar</label>
-                                <select name="payment_method" class="form-control" required>
+                                <select name="payment_method" id="payment_method" class="form-control" required>
                                     <option value="tunai">Tunai</option>
                                     <option value="transfer">Transfer</option>
                                     <option value="qris">QRIS</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group" id="box-tunai">
+                                <label class="form-control-label">Uang diterima (tunai)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
+                                    <input type="number" name="cash_received" id="cash_received" min="0" class="form-control" placeholder="Kosongkan jika uang pas">
+                                </div>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-pas">Uang pas</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary btn-nominal" data-n="20000">20.000</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary btn-nominal" data-n="50000">50.000</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary btn-nominal" data-n="100000">100.000</button>
+                                </div>
+                                <div class="small mt-2" id="info-kembali"></div>
                             </div>
 
                             <hr>
@@ -92,6 +107,7 @@
 
     var cart = {};
     var member = null;
+    var totalBayar = 0;
 
     var daftar = document.getElementById('daftar-produk');
     var isi = document.getElementById('isi-keranjang');
@@ -105,6 +121,41 @@
         if (cls) e.className = cls;
         return e;
     }
+
+    function hitungKembali() {
+        var tunai = document.getElementById('payment_method').value === 'tunai';
+        var kotak = document.getElementById('box-tunai');
+        var info  = document.getElementById('info-kembali');
+        var cash  = document.getElementById('cash_received');
+
+        kotak.style.display = tunai ? '' : 'none';
+        if (!tunai) { cash.value = ''; info.textContent = ''; return; }
+
+        var v = parseInt(cash.value);
+        if (isNaN(v)) {
+            info.className = 'small mt-2 text-muted';
+            info.textContent = totalBayar > 0 ? 'Kosong dianggap uang pas ' + rupiah(totalBayar) : '';
+        } else if (v < totalBayar) {
+            info.className = 'small mt-2 text-danger';
+            info.textContent = 'Kurang ' + rupiah(totalBayar - v);
+        } else {
+            info.className = 'small mt-2 text-success';
+            info.textContent = 'Kembalian ' + rupiah(v - totalBayar);
+        }
+    }
+
+    document.getElementById('payment_method').addEventListener('change', hitungKembali);
+    document.getElementById('cash_received').addEventListener('input', hitungKembali);
+    document.getElementById('btn-pas').addEventListener('click', function () {
+        document.getElementById('cash_received').value = totalBayar;
+        hitungKembali();
+    });
+    document.querySelectorAll('.btn-nominal').forEach(function (b) {
+        b.addEventListener('click', function () {
+            document.getElementById('cash_received').value = b.dataset.n;
+            hitungKembali();
+        });
+    });
 
     function renderProduk() {
         var q = cari.value.toLowerCase();
@@ -180,6 +231,8 @@
         var pakai = (member && usePoints.checked) ? Math.min(member.points, subtotal) : 0;
         var setelah = subtotal - pakai;
         var dapat = member ? Math.floor(setelah / STEP) * REWARD : 0;
+        totalBayar = setelah;
+        hitungKembali();
 
         document.getElementById('s-subtotal').textContent = rupiah(subtotal);
         document.getElementById('s-poin').textContent = pakai > 0 ? '−' + rupiah(pakai) : 'Rp0';
@@ -236,6 +289,13 @@
     document.getElementById('form-pos').addEventListener('submit', function (e) {
         var ids = Object.keys(cart);
         if (ids.length === 0) { e.preventDefault(); alert('Pilih minimal satu produk.'); return; }
+        var tunai = document.getElementById('payment_method').value === 'tunai';
+        var uang  = parseInt(document.getElementById('cash_received').value);
+        if (tunai && !isNaN(uang) && uang < totalBayar) {
+            e.preventDefault();
+            alert('Uang yang diterima kurang dari total bayar.');
+            return;
+        }
 
         var box = document.getElementById('hidden-items');
         box.innerHTML = '';

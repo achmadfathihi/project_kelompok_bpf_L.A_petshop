@@ -179,7 +179,7 @@
                 @endif
 
                 @unless ($order->isOnline())
-                    <button type="button" class="btn btn-outline-primary btn-block" onclick="window.print()">Cetak Struk</button>
+                    <a href="{{ route('kasir.struk', $order) }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-block">Cetak Struk</a>
                 @endunless
             </div>
         </div>

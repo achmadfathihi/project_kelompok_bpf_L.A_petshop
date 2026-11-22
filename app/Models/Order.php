@@ -38,7 +38,7 @@ class Order extends Model
         'recipient_name', 'recipient_phone', 'address',
         'items_total', 'points_used', 'shipping_fee', 'points_earned',
         'pay_before', 'cancelled_at', 'cancel_reason', 'payment_method',
-        'paid_at', 'shipping_note', 'shipped_at', 'completed_at', 'completed_auto',
+        'paid_at', 'shipping_note', 'shipped_at', 'completed_at', 'completed_auto','cash_received',
     ];
 
     protected $casts = [

@@ -13,10 +13,13 @@
     <link href="{{ asset('argon/css/argon.css') }}" rel="stylesheet">
     <style>
         @media print {
-            #sidenav-main, #navbar-main, .header, .no-print, footer { display: none !important; }
+            html, body, .main-content { background: #fff !important; }
+            #sidenav-main, #navbar-main, .header, .navbar, .no-print, footer { display: none !important; }
             .main-content { margin-left: 0 !important; }
+            .container-fluid { padding-left: 0 !important; padding-right: 0 !important; }
             .mt--7 { margin-top: 0 !important; }
-            .card { box-shadow: none !important; border: 1px solid #ddd; }
+            .bg-gradient-primary, .bg-gradient-default { background: #fff !important; }
+            .card { box-shadow: none !important; border: 1px solid #CCC !important; background: #fff !important; }
         }
     </style>
     @stack('css')

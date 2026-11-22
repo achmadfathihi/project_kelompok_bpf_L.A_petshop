@@ -48,6 +48,7 @@ class PosController extends Controller
             'items.*'        => 'required|integer|min:1|max:1000',
             'member_id'      => 'nullable|integer',
             'payment_method' => 'required|in:tunai,transfer,qris',
+            'cash_received'  => 'nullable|integer|min:0|max:100000000',
         ]);
 
         $cart = collect($data['items'])
@@ -68,10 +69,12 @@ class PosController extends Controller
             $cart,
             $member,
             $request->boolean('use_points'),
-            $data['payment_method']
+            $data['payment_method'],
+            isset($data['cash_received']) ? (int) $data['cash_received'] : null
         );
 
-        return redirect()->route('kasir.pesanan.show', $order)
+        // Langsung ke struk, seperti kasir pada umumnya
+        return redirect()->route('kasir.struk', $order)
             ->with('status', 'Transaksi ' . $order->invoice_no . ' tersimpan.');
     }
 }

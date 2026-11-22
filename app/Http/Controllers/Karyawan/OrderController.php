@@ -46,6 +46,15 @@ class OrderController extends Controller
         return view('karyawan.pesanan.show', compact('order'));
     }
 
+    public function cetak(Order $order)
+    {
+        abort_unless($order->channel === 'online' && in_array($order->status, self::PAID, true), 404);
+
+        $order->load(['items.batches.batch', 'customer']);
+
+        return view('karyawan.pesanan.cetak', compact('order'));
+    }
+
     public function ship(Request $request, Order $order)
     {
         $data = $request->validate(['note' => 'required|string|max:200']);

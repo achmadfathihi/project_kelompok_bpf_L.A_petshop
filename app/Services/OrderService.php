@@ -506,11 +506,11 @@ class OrderService
      *
      * @param array<int,int> $cart [product_id => qty]
      */
-    public function placeOffline(User $cashier, array $cart, ?User $member, bool $usePoints, string $method): Order
+    public function placeOffline(User $cashier, array $cart, ?User $member, bool $usePoints, string $method, ?int $cashReceived = null): Order
     {
         ksort($cart);
 
-        return DB::transaction(function () use ($cashier, $cart, $member, $usePoints, $method) {
+        return DB::transaction(function () use ($cashier, $cart, $member, $usePoints, $method, $cashReceived) {
             $user = $member ? User::whereKey($member->id)->lockForUpdate()->firstOrFail() : null;
 
             $products = Product::whereIn('id', array_keys($cart))->where('is_active', true)->get()->keyBy('id');
@@ -529,12 +529,21 @@ class OrderService
             $pointsUsed = ($user && $usePoints) ? min((int) $user->points, $itemsTotal) : 0;
             $earned     = $user ? Order::pointsFor($itemsTotal - $pointsUsed) : 0;
 
+            $totalBayar = $itemsTotal - $pointsUsed;
+
+            if ($method === 'tunai' && $cashReceived !== null && $cashReceived < $totalBayar) {
+                throw ValidationException::withMessages([
+                    'cash_received' => 'Uang yang diterima kurang dari total bayar (Rp' . number_format($totalBayar, 0, ',', '.') . ').',
+                ]);
+            }
+
             $order = Order::create([
                 'customer_id'    => $user?->id,
                 'cashier_id'     => $cashier->id,
                 'channel'        => 'offline',
                 'status'         => 'selesai',
                 'payment_method' => $method,
+                'cash_received'  => $method === 'tunai' ? $cashReceived : null,
                 'items_total'    => $itemsTotal,
                 'points_used'    => $pointsUsed,
                 'shipping_fee'   => 0,

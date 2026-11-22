@@ -22,12 +22,16 @@ class SettingController extends Controller
             'bank_holder'  => 'nullable|string|max:100',
             'qris_image'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'store_phone' => ['nullable', 'regex:/^[0-9+\-\s]{6,20}$/'],
+            'store_address'  => 'nullable|string|max:200',
+            'receipt_footer' => 'nullable|string|max:150',
         ]);
 
         foreach (['bank_name', 'bank_account', 'bank_holder'] as $key) {
             Setting::put($key, $data[$key] ?? null);
         }
         Setting::put('store_phone', $data['store_phone'] ?? null);
+        Setting::put('store_address', $data['store_address'] ?? null);
+        Setting::put('receipt_footer', $data['receipt_footer'] ?? null);
 
         if ($request->hasFile('qris_image')) {
             $old = Setting::find('qris_image')?->value;
