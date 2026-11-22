@@ -13,7 +13,7 @@ class SettingSeeder extends Seeder
         $contoh = [
             'bank_name'    => 'Bank Contoh',
             'bank_account' => '1234567890',
-            'bank_holder'  => 'L. A Petshop Rumbai',
+            'bank_holder'  => 'L.A Petshop Rumbai',
         ];
 
         foreach ($contoh as $key => $value) {

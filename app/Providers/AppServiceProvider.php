@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
+use App\Models\Category;
+use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -52,6 +54,14 @@ class AppServiceProvider extends ServiceProvider
                 ->line("Tautan ini berlaku {$menit} menit dan hanya bisa dipakai satu kali.")
                 ->line('Jika Anda tidak meminta ini, abaikan email ini. Password Anda tidak berubah.')
                 ->salutation('Salam, ' . config('app.name'));
+        });
+
+        View::composer(['layouts.partials.header', 'layouts.partials.footer'], function ($view) {
+            $view->with('tokoTelp', Setting::find('store_phone')?->value);
+        });
+
+        View::composer('layouts.partials.header', function ($view) {
+            $view->with('menuCategories', Category::orderBy('name')->get(['id', 'name']));
         });
     }
 }

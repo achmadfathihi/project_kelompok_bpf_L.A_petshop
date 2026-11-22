@@ -3,35 +3,36 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', config('app.name'))</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="theme-color" content="#1F4E5F">
+    <title>@hasSection('title')@yield('title') · @endif{{ config('app.name') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link href="{{ asset('vendor/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/petshop.css') }}?v={{ @filemtime(public_path('css/petshop.css')) }}" rel="stylesheet">
+    @stack('css')
 </head>
-<body class="bg-light">
+<body>
+    @include('layouts.partials.icons')
+    <a class="visually-hidden-focusable" href="#konten">Lewati ke konten</a>
 
-    @include('layouts.partials.menu')
+    @include('layouts.partials.header')
 
-    <main class="container py-4">
-        @if (session('status'))
-            <div class="alert alert-success">{{ session('status') }}</div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+    <main id="konten">
+        @hasSection('wide')
+            @if (session('status') || $errors->any())
+                <div class="container pt-3">@include('layouts.partials.flash')</div>
+            @endif
+            @yield('wide')
+        @else
+            <div class="container py-4">
+                @include('layouts.partials.flash')
+                @yield('content')
             </div>
         @endif
-
-        @yield('content')
     </main>
 
-    <footer class="text-center text-muted small py-4">
-        {{ config('app.name') }} &middot; Buka setiap hari 07.00 - 22.40 WIB
-    </footer>
+    @include('layouts.partials.footer')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+    @stack('js')
 </body>
 </html>
